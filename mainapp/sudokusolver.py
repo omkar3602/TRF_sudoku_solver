@@ -141,7 +141,7 @@ def Solved(quiz):
 
 def call_solver(imgpath):
 
-    print(os.getcwd())
+    # print(os.getcwd())
     puzzle = cv2.imread(os.path.join(os.getcwd(), 'media', imgpath.split('/')[-1]))
 
     # Resizing puzzle to be solved
