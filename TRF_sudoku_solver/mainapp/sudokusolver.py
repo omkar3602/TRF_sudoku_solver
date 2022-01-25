@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 from tensorflow import keras
 from PIL import Image 
+import os
 
 def preprocess(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
@@ -138,13 +139,17 @@ def Solved(quiz):
                 print(str(quiz[row][col]) + " ", end="")
 
 
-def call_solver():
+def call_solver(imgpath):
 
-    print("IN sudokusolver")
-    puzzle = cv2.imread(r'C:\Users\omkar\OneDrive\Desktop\TRF\SEM-4\ML\TRF_sudoku_solver\TRF_sudoku_solver\mainapp\su.jpg')
+    print(os.getcwd())
+    puzzle = cv2.imread(os.path.join(os.getcwd(), 'media', imgpath.split('/')[-1]))
 
     # Resizing puzzle to be solved
     puzzle = cv2.resize(puzzle, (450,450))
+    # try:
+    #     puzzle = cv2.resize(puzzle, (450,450))
+    # except Exception as e:
+    #     print(e)
 
     sudoku_a = puzzle.copy()
     # Preprocessing Puzzle 
@@ -174,16 +179,20 @@ def call_solver():
 
     sudoku_cell_croped= CropCell(sudoku_cell)
 
-    model = keras.models.load_model(r'C:\Users\omkar\OneDrive\Desktop\TRF\SEM-4\ML\TRF_sudoku_solver\TRF_sudoku_solver\mainapp\digitRecognition.h5')
+    model = keras.models.load_model(os.path.join(os.getcwd(), 'mainapp', 'digitRecognition.h5'))
 
     grid = read_cells(sudoku_cell_croped, model)
     grid = np.asarray(grid)
 
     grid = np.reshape(grid,(9,9))
 
+    unsolved_grid = grid.tolist()
+
     if solve(grid):
         Solved(grid)
     else:
         print("Solution don't exist or Model misread digits.")
+    
+    return unsolved_grid, grid.tolist()
 
-call_solver()
+# call_solver()
